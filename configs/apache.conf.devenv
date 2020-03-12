@@ -31,7 +31,7 @@ HostnameLookups Off
 
 LoadModule auth_basic_module /usr/lib/apache2/modules/mod_auth_basic.so
 LoadModule authn_file_module /usr/lib/apache2/modules/mod_authn_file.so
-LoadModule authz_default_module /usr/lib/apache2/modules/mod_authz_default.so
+#LoadModule authz_default_module /usr/lib/apache2/modules/mod_authz_default.so
 LoadModule authz_groupfile_module /usr/lib/apache2/modules/mod_authz_groupfile.so
 LoadModule authz_host_module /usr/lib/apache2/modules/mod_authz_host.so
 LoadModule authz_user_module /usr/lib/apache2/modules/mod_authz_user.so
