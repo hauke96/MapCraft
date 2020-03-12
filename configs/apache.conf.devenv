@@ -36,7 +36,7 @@ LoadModule authz_groupfile_module /usr/lib/apache2/modules/mod_authz_groupfile.s
 LoadModule authz_host_module /usr/lib/apache2/modules/mod_authz_host.so
 LoadModule authz_user_module /usr/lib/apache2/modules/mod_authz_user.so
 
-LoadModule php5_module /usr/lib/apache2/modules/libphp5.so
+LoadModule php5_module /usr/lib/apache2/modules/libphp7.2.so
 
 LoadModule alias_module /usr/lib/apache2/modules/mod_alias.so
 LoadModule cgid_module /usr/lib/apache2/modules/mod_cgid.so
@@ -87,7 +87,7 @@ ScriptAlias /app/ ${SRC_ROOT}/app/
 # Tail
 # ###########################
 
-<IfModule mod_php5.c>
+<IfModule mod_php7.2.c>
     <FilesMatch "\.ph(p3?|tml)$">
 	SetHandler application/x-httpd-php
     </FilesMatch>
