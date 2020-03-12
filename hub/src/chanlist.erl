@@ -10,6 +10,20 @@
 -include("hub.hrl").
 
 %%
+%% Helpers
+%%
+bySes() ->
+	"byses".
+
+byChan() ->
+	"bychan".
+
+new_chanlist() ->
+	%% TODO: somehow this need to be moved into chanlist.erl
+	ets:new(bySes(), [set, protected]),
+	ets:new(byChan(),  [bag, protected, {keypos, 2}]).
+
+%%
 %% online/offline
 %%
 set_online(ChanId, Pid) ->
@@ -46,13 +60,13 @@ lookup() ->
 	{ok, fmt_lookup(lookup_raw())}.
 
 lookup_raw(sesid, SesId) ->
-	ets:lookup(BySes, SesId);
+	ets:lookup(bySes(), SesId);
 
 lookup_raw(chanid, ChanId) ->
-	ets:lookup(ByChan, ChanId).
+	ets:lookup(byChan(), ChanId).
 
 lookup_raw() ->
-    ets:tab2list(ByChan).
+    ets:tab2list(byChan()).
 
 lookup_expired() ->
 	{ok, fmt_lookup(lookup_expired_raw())}.
@@ -70,10 +84,10 @@ lookup_expired_raw() ->
 						  _ ->
 							  Acc
 					  end
-			  end, [], ByChan).
+			  end, [], byChan()).
 
 size() ->
-	Info = ets:info(ByChan),
+	Info = ets:info(byChan()),
 	proplists:get_value(size, Info).
 
 %%
@@ -84,15 +98,15 @@ insert(ChanId, Pid, State) ->
 
 insert(ChanId, Pid, State, Mtime) ->
 	Entry = {ChanId, ChanId#hub_chan.sesid, Pid, State, Mtime},
-	ets:insert(ByChan, Entry),
-	ets:insert(BySes, Entry),
+	ets:insert(byChan(), Entry),
+	ets:insert(bySes(), Entry),
 	ok.
 
 delete(Type, Id) ->
 	Entries = lookup_raw(Type, Id),
 	lists:foreach( fun(Entry) ->
-						   ets:delete_object(ByChan, Entry),
-						   ets:delete_object(BySes, Entry)
+						   ets:delete_object(byChan(), Entry),
+						   ets:delete_object(bySes(), Entry)
 				   end, Entries ),
 	ok.
 

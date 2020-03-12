@@ -68,7 +68,7 @@ init(PieId) ->
 	timer:send_interval(config:get(pie_cleanup_interval) * 1000, cleanup),
 	{ok, #state{
 	   id   = PieId,
-	   list = new_chanlist()
+	   list = chanlist:new_chanlist()
 	  }}.
 
 handle_call({set_online, ChanId, Pid}, _From, #state{list = List} = State) ->
@@ -123,13 +123,6 @@ terminate(_Reason, _State) ->
 %%
 %% Helpers
 %%
-new_chanlist() ->
-	%% TODO: somehow this need to be moved into chanlist.erl
-	chanlist:new(
-	  ets:new(bychan, [set, protected]),
-	  ets:new(byses,  [bag, protected, {keypos, 2}])
-	 ).
-
 delete_chan_and_cleanup(List, ChanId, Reason) ->
 	ok = List:delete(chanid, ChanId),
 	mqueue:check_for_me(ChanId),

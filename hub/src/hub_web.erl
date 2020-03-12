@@ -64,7 +64,7 @@ handle_hub_req(Method, Req, ["pie", PieId, SesId, TabId | Rest]) ->
 						sesid = SesId,
 						tabid = TabId },
 	Chan = chan:new(ChanId, Req),
-	Chan:handle(Method, Rest);
+	Chan:handle(Method, Rest, Req);
 
 handle_hub_req(Method, Req, ["api" | Rest]) ->
 	stats:incr({api, calls}),
