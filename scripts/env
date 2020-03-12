@@ -59,7 +59,7 @@ db-reset() {
 
 	# Create special user
 	dropuser $DB_USER 2>/dev/null || true
- 	psql $DATABASE -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASS}' LOGIN CREATEUSER" >/dev/null
+ 	psql $DATABASE -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASS}' LOGIN" >/dev/null
 
 	# Prepare scheme
 	TMP_SCHEME=${TMP_DIR}/scheme.sql
