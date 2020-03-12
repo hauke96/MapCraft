@@ -36,7 +36,7 @@ LoadModule authz_groupfile_module /usr/lib/apache2/modules/mod_authz_groupfile.s
 LoadModule authz_host_module /usr/lib/apache2/modules/mod_authz_host.so
 LoadModule authz_user_module /usr/lib/apache2/modules/mod_authz_user.so
 
-LoadModule php7.2_module /usr/lib/apache2/modules/libphp7.2.so
+LoadModule php7_module /usr/lib/apache2/modules/libphp7.2.so
 
 LoadModule alias_module /usr/lib/apache2/modules/mod_alias.so
 LoadModule cgid_module /usr/lib/apache2/modules/mod_cgid.so
