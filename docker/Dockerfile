@@ -18,10 +18,10 @@ RUN echo 4
 ARG OAUTH_KEY
 ARG OAUTH_SEC
 RUN echo "$OAUTH_KEY // $OAUTH_SEC"
-RUN sed -i 's/$$CONSKEY$$/$OAUTH_KEY/' /MapCraft/app/auth_osm.php
-RUN sed -i 's/$$CONSKEY$$/$OAUTH_KEY/' /MapCraft/app/oauth_callback.php
-RUN sed -i 's/$$CONSSEC$$/$OAUTH_SEC/' /MapCraft/app/auth_osm.php
-RUN sed -i 's/$$CONSSEC$$/$OAUTH_SEC/' /MapCraft/app/oauth_callback.php
+RUN sed -i 's/\$\$CONSKEY\$\$/'"$OAUTH_KEY"'/' /MapCraft/app/auth_osm.php
+RUN sed -i 's/\$\$CONSKEY\$\$/'"$OAUTH_KEY"'/' /MapCraft/app/oauth_callback.php
+RUN sed -i 's/\$\$CONSSEC\$\$/'"$OAUTH_SEC"'/' /MapCraft/app/auth_osm.php
+RUN sed -i 's/\$\$CONSSEC\$\$/'"$OAUTH_SEC"'/' /MapCraft/app/oauth_callback.php
 
 # Switch to user "postgres"
 USER postgres
