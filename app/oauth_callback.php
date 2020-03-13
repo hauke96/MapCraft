@@ -4,8 +4,8 @@ $authurl = 'https://www.openstreetmap.org/oauth/authorize';         // OSM Autho
 $acc_url = 'https://www.openstreetmap.org/oauth/access_token';      // OSM Access Token URL
 $api_url = 'https://api.openstreetmap.org/api/0.6/';                // OSM API URL
 
-$conskey = '5vecf0vlYdjvFd0ZPdXt3w';
-$conssec = 'wzb8A7oX8gq9lRyCALFyQs2ZoIYgLCFdFW2YKeJvHKQ';
+$conskey = '$$CONSKEY$$'; // replace manually or via script
+$conssec = '$$CONSSEC$$'; // replace manually or via script
 
 ini_set('session.gc_maxlifetime', 7776000);
 ini_set('session.cookie_lifetime', 7776000);

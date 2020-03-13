@@ -3,6 +3,9 @@ version: '3.4'
 services:
  mapcraft:
   build:
+    args:
+      - OAUTH_KEY=${OAUTH_KEY}
+      - OAUTH_SEC=${OAUTH_SEC}
     network: host
     context: .
   container_name: mapcraft
