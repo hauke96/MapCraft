@@ -55,7 +55,6 @@ if [ -z $AUTH_TYPE ]
 then
 	export AUTH_TYPE="fake"
 fi
-echo "$AUTH_TYPE" > /auth-type
 
 # Configs
 export HUB_CONFIG=$TMP_DIR/hub.config

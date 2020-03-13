@@ -1,4 +1,6 @@
 <?php
+require '../lib/config.php';
+
 $req_url = 'https://www.openstreetmap.org/oauth/request_token';     // OSM Request Token URL
 $authurl = 'https://www.openstreetmap.org/oauth/authorize';         // OSM Authorize URL
 $acc_url = 'https://www.openstreetmap.org/oauth/access_token';      // OSM Access Token URL
