@@ -79,7 +79,7 @@ handle_call({set_online, ChanId, Pid}, _From, #state{list = List} = State) ->
 
 handle_call({set_offline, ChanId, Pid}, _From, #state{list = List} = State) ->
 	announce_if_new(ChanId, List),
-	Res = List:set_offline(chanid, List, ChanId, Pid),
+	Res = chanlist:set_offline(chanid, List, ChanId, Pid),
 	stats:set({pie, State#state.id, channels}, chanlist:size(List)),
 	{reply, Res, State};
 
@@ -125,10 +125,10 @@ terminate(_Reason, _State) ->
 %%
 new_chanlist() ->
 	%% TODO: somehow this need to be moved into chanlist.erl
-	chanlist:new(
+	[
 	  ets:new(bychan, [set, protected]),
 	  ets:new(byses,  [bag, protected, {keypos, 2}])
-	 ).
+	].
 
 delete_chan_and_cleanup(List, ChanId, Reason) ->
 	ok = chanlist:delete(chanid, ChanId, List),
@@ -236,32 +236,32 @@ tmp_list() ->
 	{Chan11, Pid11} = gen_chan(1,1,1),
 	{Chan12, Pid12} = gen_chan(1,1,2),
 	{Chan2,  Pid2}  = gen_chan(1,2,1),
-	ok = List:set_online(List, Chan11, Pid11),
-	ok = List:set_online(List, Chan12, Pid12),
-	ok = List:set_online(List, Chan2,  Pid2),
+	ok = chanlist:set_online(List, Chan11, Pid11),
+	ok = chanlist:set_online(List, Chan12, Pid12),
+	ok = chanlist:set_online(List, Chan2,  Pid2),
 	{List, {Chan11, Pid11}, {Chan12, Pid12}, {Chan2, Pid2}}.
 
 test_chan(List, ChanId, Pid, State) ->
-	[{ChanId, _, Pid, State, _}] = List:lookup_raw(chanid, List, ChanId).
+	[{ChanId, _, Pid, State, _}] = chanlist:lookup_raw(chanid, List, ChanId).
 
 chanlist_lookup_test() ->
 	{List, {Chan11, Pid11}, {Chan12, Pid12}, _} = tmp_list(),
 	{ok,
 	 [{Pid11, Chan11, online}]
-	} = List:lookup(chanid, List, Chan11),
+	} = chanlist:lookup(chanid, List, Chan11),
 	{ok,
 	 [{Pid11, Chan11, online},
 	  {Pid12, Chan12, online}]
-	} = List:lookup(sesid, List, 1).
+	} = chanlist:lookup(sesid, List, 1).
 
 chanlist_offline_test() ->
 	{List, {Chan11, Pid11}, {Chan12, Pid12}, {Chan2, Pid2}} = tmp_list(),
 	%% just set 12 to offline
-	ok = List:set_offline(chanid, List, Chan12, Pid12),
+	ok = chanlist:set_offline(chanid, List, Chan12, Pid12),
 	%% twice
-	ok = List:set_offline(chanid, List, Chan12, Pid12),
+	ok = chanlist:set_offline(chanid, List, Chan12, Pid12),
 	%% setting to offline with another pid should return new one
-	{new_pid, Pid2} = List:set_offline(chanid, List, Chan2, make_ref()),
+	{new_pid, Pid2} = chanlist:set_offline(chanid, List, Chan2, make_ref()),
 	%% and test
 	test_chan(List, Chan11, Pid11, online),
 	test_chan(List, Chan12, Pid12, offline),
@@ -270,8 +270,8 @@ chanlist_offline_test() ->
 chanlist_online_test() ->
 	{List, {Chan11, Pid11}, {Chan12, Pid12}, _} = tmp_list(),
 	NewPid = make_ref(),
-	ok = List:set_offline(chanid, List, Chan12, Pid12),
-	ok = List:set_online(List, Chan12, NewPid),
+	ok = chanlist:set_offline(chanid, List, Chan12, Pid12),
+	ok = chanlist:set_online(List, Chan12, NewPid),
 	%% test
 	test_chan(List, Chan11, Pid11, online),
 	test_chan(List, Chan12, NewPid, online).

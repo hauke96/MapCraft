@@ -7,6 +7,8 @@
 -module(chanlist).
 -compile(export_all).
 
+-import(lists, [nth/2]).
+
 -include("hub.hrl").
 
 %%
@@ -17,7 +19,7 @@ set_online(List, ChanId, Pid) ->
 	insert(ChanId, Pid, online, List).
 
 set_offline(chanid, List, ChanId, Pid) ->
-	case lookup_raw(chanid, ChanId, List) of
+	case lookup_raw(chanid, List, ChanId) of
 		[Entry] ->
 			set_offline(entry, Entry, Pid, List);
 		[] ->
@@ -41,16 +43,16 @@ set_offline(entry, Entry, Pid, List) ->
 %%
 
 lookup(List) ->
-	ets:tab2list(list:nth(0, List)).
+	ets:tab2list(lists:nth(1, List)).
 
 lookup(Type, List, Id) ->
 	{ok, fmt_lookup(lookup_raw(Type, List, Id))}.
 
 lookup_raw(sesid, List, SesId) ->
-	ets:lookup(list:nth(1, List), SesId);
+	ets:lookup(lists:nth(2, List), SesId);
 
 lookup_raw(chanid, List, ChanId) ->
-	ets:lookup(list:nth(0, List), ChanId).
+	ets:lookup(lists:nth(1, List), ChanId).
 
 lookup_expired(List) ->
 	{ok, fmt_lookup(lookup_expired_raw(List))}.
@@ -68,10 +70,10 @@ lookup_expired_raw(List) ->
 						  _ ->
 							  Acc
 					  end
-			  end, [], list:nth(0, List)).
+			  end, [], lists:nth(1, List)).
 
 size(List) ->
-	Info = ets:info(list:nth(0, List)),
+	Info = ets:info(lists:nth(1, List)),
 	proplists:get_value(size, Info).
 
 %%
@@ -82,15 +84,15 @@ insert(ChanId, Pid, State, List) ->
 
 insert(ChanId, Pid, State, Mtime, List) ->
 	Entry = {ChanId, ChanId#hub_chan.sesid, Pid, State, Mtime},
-	ets:insert(list:nth(0, List), Entry),
-	ets:insert(list:nth(1, List), Entry),
+	ets:insert(lists:nth(1, List), Entry),
+	ets:insert(lists:nth(2, List), Entry),
 	ok.
 
 delete(Type, Id, List) ->
-	Entries = lookup_raw(Type, Id, List),
+	Entries = lookup_raw(Type, List, Id),
 	lists:foreach( fun(Entry) ->
-						   ets:delete_object(list:nth(0, List), Entry),
-						   ets:delete_object(list:nth(1, List), Entry)
+						   ets:delete_object(lists:nth(1, List), Entry),
+						   ets:delete_object(lists:nth(2, List), Entry)
 				   end, Entries ),
 	ok.
 
