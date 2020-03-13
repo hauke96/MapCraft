@@ -12,7 +12,6 @@ RUN echo 16
 
 # setup database
 RUN git clone https://github.com/hauke96/MapCraft.git
-RUN cd MapCraft && git checkout ubuntu-1804
 RUN chmod -R a+wr MapCraft
 
 # Switch to user "postgres"
