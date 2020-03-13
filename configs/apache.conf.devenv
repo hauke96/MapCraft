@@ -29,6 +29,8 @@ HostnameLookups Off
 
 LoadModule auth_basic_module /usr/lib/apache2/modules/mod_auth_basic.so
 LoadModule authn_file_module /usr/lib/apache2/modules/mod_authn_file.so
+LoadModule authn_core_module /usr/lib/apache2/modules/mod_authn_core.so
+LoadModule authz_core_module /usr/lib/apache2/modules/mod_authz_core.so
 LoadModule authz_groupfile_module /usr/lib/apache2/modules/mod_authz_groupfile.so
 LoadModule authz_host_module /usr/lib/apache2/modules/mod_authz_host.so
 LoadModule authz_user_module /usr/lib/apache2/modules/mod_authz_user.so
@@ -74,7 +76,9 @@ DocumentRoot ${SRC_ROOT}/static
 ScriptAlias /app/ ${SRC_ROOT}/app/
 <Directory "${SRC_ROOT}/app/">
 	AllowOverride None
+	AddHandler application/x-httpd-php .php
 	Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+	Require all granted
 </Directory>
 
 
@@ -103,6 +107,7 @@ ScriptAlias /app/ ${SRC_ROOT}/app/
 <IfModule mod_status.c>
 <Location /server-status>
     SetHandler server-status
+	Require all denied
 </Location>
 ExtendedStatus On
 #SeeRequestTail On
