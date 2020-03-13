@@ -41,12 +41,11 @@ set_offline(entry, Entry, Pid, List) ->
 %%
 %% Lookup and other info
 %%
-
-lookup(List) ->
-	ets:tab2list(lists:nth(1, List)).
-
 lookup(Type, List, Id) ->
 	{ok, fmt_lookup(lookup_raw(Type, List, Id))}.
+
+lookup(List) ->
+	{ok, fmt_lookup(ets:tab2list(lists:nth(1, List)))}.
 
 lookup_raw(sesid, List, SesId) ->
 	ets:lookup(lists:nth(2, List), SesId);

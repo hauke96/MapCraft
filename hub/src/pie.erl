@@ -216,7 +216,7 @@ get_pie(PieId) ->
 	case gproc:where(Key) of
 		undefined ->
 			supervisor:start_child(pie_sup, [PieId]),
-			{Pid, _} = gproc:await(Key, 5000),
+			{Pid, _} = gproc:await(Key, 30000),
 			Pid;
 		Pid ->
 			Pid
