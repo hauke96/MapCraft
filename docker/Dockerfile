@@ -9,7 +9,7 @@ RUN apt-get -y install git nginx apache2 erlang git postgresql php7.2 php7.2-dev
 RUN pecl install oauth
 
 # Incrementor for partial rebuilds. If the above is cached, just increase the number and the build starts from here.
-RUN echo 22
+RUN echo 23
 
 # setup database
 RUN git clone https://github.com/hauke96/MapCraft.git
@@ -28,7 +28,8 @@ RUN sed -i 's/\$\$CONSKEY\$\$/'"$OAUTH_KEY"'/' /MapCraft/app/oauth_callback.php
 RUN sed -i 's/\$\$CONSSEC\$\$/'"$OAUTH_SEC"'/' /MapCraft/app/auth_osm.php
 RUN sed -i 's/\$\$CONSSEC\$\$/'"$OAUTH_SEC"'/' /MapCraft/app/oauth_callback.php
 
-# Switch to user "postgres"
+# Start database
+RUN sed -i 's/port = .*/port = '"$DB_PORT"'/' /etc/postgresql/10/main/postgresql.conf
 USER postgres
 RUN service postgresql start && cd MapCraft && ./scripts/env init
 
