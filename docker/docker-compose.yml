@@ -7,13 +7,14 @@ services:
       - OAUTH_KEY=${OAUTH_KEY}
       - OAUTH_SEC=${OAUTH_SEC}
       - AUTH_TYPE=${AUTH_TYPE}
+      - DB_PORT=${DB_PORT}
     network: host
     context: .
   container_name: mapcraft
   network_mode: host
   restart: unless-stopped
   ports:
-   - "5432:5432"
+   - "2345:2345"
    - "2000:2000"
    - "2100:2100"
    - "2200:2200"

@@ -49,6 +49,11 @@ export DATABASE=mapcraft-devel
 export DB_USER=develcrafter
 export DB_PASS=develaccess
 export DB_HOST=localhost
+if [ -z $DB_PORT ]
+then
+	export DB_PORT="5432"
+fi
+
 
 # Auth
 if [ -z $AUTH_TYPE ]

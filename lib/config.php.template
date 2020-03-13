@@ -9,6 +9,7 @@ $host = '${DB_HOST}';
 $user = '${DB_USER}';
 $pass = '${DB_PASS}';
 $db   = '${DATABASE}';
+$port = '${DB_PORT}';
 
 $auth_type = '${AUTH_TYPE}';     // osm | fake
 $hub_full_url = 'http://127.0.0.1:${HUB_PORT}/hub';
@@ -19,6 +20,6 @@ $logic_log_file = '${LOGIC_LOG_FILE}';
 
 session_save_path('${SESSION_TMP_DIR}');
 
-$connection = pg_pconnect('host='.$host.' port=5432 dbname='.$db.' user='.$user.' password='.$pass);
+$connection = pg_pconnect('host='.$host.' port='.$port.' dbname='.$db.' user='.$user.' password='.$pass);
 pg_query($connection, 'SET search_path TO mapcraft');
 ?>
