@@ -4,34 +4,36 @@
 %% To Public License, Version 2, as published by Sam Hocevar. See
 %% http://sam.zoy.org/wtfpl/COPYING for more details.
 
--module(chanlist, [ByChan, BySes]).
+-module(chanlist).
 -compile(export_all).
+
+-import(lists, [nth/2]).
 
 -include("hub.hrl").
 
 %%
 %% online/offline
 %%
-set_online(ChanId, Pid) ->
-	ok = delete(chanid, ChanId),
-	insert(ChanId, Pid, online).
+set_online(List, ChanId, Pid) ->
+	ok = delete(chanid, ChanId, List),
+	insert(ChanId, Pid, online, List).
 
-set_offline(chanid, ChanId, Pid) ->
-	case lookup_raw(chanid, ChanId) of
+set_offline(chanid, List, ChanId, Pid) ->
+	case lookup_raw(chanid, List, ChanId) of
 		[Entry] ->
-			set_offline(entry, Entry, Pid);
+			set_offline(entry, Entry, Pid, List);
 		[] ->
-			insert(ChanId, Pid, offline)
+			insert(ChanId, Pid, offline, List)
 	end;
 
-set_offline(entry, Entry, Pid) ->
+set_offline(entry, Entry, Pid, List) ->
 	{ChanId, _, CurPid, CurState, _} = Entry,
 	case {CurPid, CurState} of
 		{_, offline} ->
 			ok;
 		{Pid, online} ->
-			ok = delete(chanid, ChanId),
-			insert(ChanId, Pid, offline);
+			ok = delete(chanid, ChanId, List),
+			insert(ChanId, Pid, offline, List);
 		{CurPid, online} ->
 			{new_pid, CurPid}
 	end.
@@ -39,25 +41,22 @@ set_offline(entry, Entry, Pid) ->
 %%
 %% Lookup and other info
 %%
-lookup(Type, Id) ->
-	{ok, fmt_lookup(lookup_raw(Type, Id))}.
+lookup(Type, List, Id) ->
+	{ok, fmt_lookup(lookup_raw(Type, List, Id))}.
 
-lookup() ->
-	{ok, fmt_lookup(lookup_raw())}.
+lookup(List) ->
+	{ok, fmt_lookup(ets:tab2list(lists:nth(1, List)))}.
 
-lookup_raw(sesid, SesId) ->
-	ets:lookup(BySes, SesId);
+lookup_raw(sesid, List, SesId) ->
+	ets:lookup(lists:nth(2, List), SesId);
 
-lookup_raw(chanid, ChanId) ->
-	ets:lookup(ByChan, ChanId).
+lookup_raw(chanid, List, ChanId) ->
+	ets:lookup(lists:nth(1, List), ChanId).
 
-lookup_raw() ->
-    ets:tab2list(ByChan).
+lookup_expired(List) ->
+	{ok, fmt_lookup(lookup_expired_raw(List))}.
 
-lookup_expired() ->
-	{ok, fmt_lookup(lookup_expired_raw())}.
-
-lookup_expired_raw() ->
+lookup_expired_raw(List) ->
 	Now = now_secs(),
 	OfflineExpire = Now - config:get(chan_expire),
 	OnlineExpire = OfflineExpire - config:get(poll_timeout),
@@ -70,29 +69,29 @@ lookup_expired_raw() ->
 						  _ ->
 							  Acc
 					  end
-			  end, [], ByChan).
+			  end, [], lists:nth(1, List)).
 
-size() ->
-	Info = ets:info(ByChan),
+size(List) ->
+	Info = ets:info(lists:nth(1, List)),
 	proplists:get_value(size, Info).
 
 %%
 %% List modifications
 %%
-insert(ChanId, Pid, State) ->
-	insert(ChanId, Pid, State, now_secs()).
+insert(ChanId, Pid, State, List) ->
+	insert(ChanId, Pid, State, now_secs(), List).
 
-insert(ChanId, Pid, State, Mtime) ->
+insert(ChanId, Pid, State, Mtime, List) ->
 	Entry = {ChanId, ChanId#hub_chan.sesid, Pid, State, Mtime},
-	ets:insert(ByChan, Entry),
-	ets:insert(BySes, Entry),
+	ets:insert(lists:nth(1, List), Entry),
+	ets:insert(lists:nth(2, List), Entry),
 	ok.
 
-delete(Type, Id) ->
-	Entries = lookup_raw(Type, Id),
+delete(Type, Id, List) ->
+	Entries = lookup_raw(Type, List, Id),
 	lists:foreach( fun(Entry) ->
-						   ets:delete_object(ByChan, Entry),
-						   ets:delete_object(BySes, Entry)
+						   ets:delete_object(lists:nth(1, List), Entry),
+						   ets:delete_object(lists:nth(2, List), Entry)
 				   end, Entries ),
 	ok.
 
