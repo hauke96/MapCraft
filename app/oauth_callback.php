@@ -1,8 +1,8 @@
 <?php
-$req_url = 'http://www.openstreetmap.org/oauth/request_token';     // OSM Request Token URL
-$authurl = 'http://www.openstreetmap.org/oauth/authorize';         // OSM Authorize URL
-$acc_url = 'http://www.openstreetmap.org/oauth/access_token';      // OSM Access Token URL
-$api_url = 'http://api.openstreetmap.org/api/0.6/';                // OSM API URL
+$req_url = 'https://www.openstreetmap.org/oauth/request_token';     // OSM Request Token URL
+$authurl = 'https://www.openstreetmap.org/oauth/authorize';         // OSM Authorize URL
+$acc_url = 'https://www.openstreetmap.org/oauth/access_token';      // OSM Access Token URL
+$api_url = 'https://api.openstreetmap.org/api/0.6/';                // OSM API URL
 
 $conskey = '5vecf0vlYdjvFd0ZPdXt3w';
 $conssec = 'wzb8A7oX8gq9lRyCALFyQs2ZoIYgLCFdFW2YKeJvHKQ';
