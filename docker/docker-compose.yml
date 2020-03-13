@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+ mapcraft:
+  build:
+    network: host
+    context: .
+  container_name: mapcraft
+  network_mode: host
+  restart: unless-stopped
+  ports:
+   - "5432:5432"
+   - "2000:2000"
+   - "2100:2100"
+   - "2200:2200"
+
