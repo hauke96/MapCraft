@@ -1,5 +1,6 @@
 <div id="pageheader" style="background-color: #92836c;">New cake creating</div>
 <?php
+require '../lib/config.php';
 
 require '../lib/update_kml.php';
 require '../lib/create_map.php';
